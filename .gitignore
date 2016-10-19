@@ -12,3 +12,6 @@ target/
 
 # ignore metadata
 .metadata
+
+#Persistence xml file
+persistence.xml
