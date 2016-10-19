@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	<h:head>
+		<title>Add Events Page</title>
+	</h:head>
+	<h:body>
+		<ui:composition template="/template/common/composite_layout.xhtml">
+			<ui:define name="content">
+				<h2>Add new Event</h2>
+				
+				<h:form>
+					<h:panelGrid columns="3">
+						<p:outputLabel for="organizers" value="Organizers" />
+						<p:selectOneMenu id="organizers" value="#{newEventController.organizer}">
+							<f:selectItem itemLabel="Select One" itemValue="" />
+    						<f:selectItems value="#{newEventController.organizers}" />
+						</p:selectOneMenu>
+						<br />
+						<br />
+						<h:outputText value="Title:" />
+						<h:inputText value="#{newEventController.title}" id="title" />
+						<h:message for="title" style="color: red" />
+						<h:outputText value="city:" />
+						<h:inputText value="#{newEventController.city}" id="city" />
+						<h:message for="city" style="color: red" />
+						<h:outputText value="Start Date:" />
+						<h:inputText value="#{newEventController.startDate}" id="startDate" />
+						<h:message for="startDate" style="color: red" />
+						<h:outputText value="End Date:" />
+						<h:inputText value="#{newEventController.endDate}" id="endDate" />
+						<h:message for="endDate" style="color: red" />
+						<h:outputText value="Content:" />
+						<h:inputText value="#{newEventController.content}" id="content" />
+						<h:message for="content" style="color: red" />
+					</h:panelGrid>
+					<h:commandButton value="Add Event" action="#{newEventController.addEvent}" />
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</h:body>
+</html>

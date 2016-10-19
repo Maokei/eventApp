@@ -1,0 +1,24 @@
+<persistence 
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+        http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+    version="2.1">
+	<persistence-unit name="eventsPU" transaction-type="JTA">
+		<description>Manages events, users and comments</description>
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<jta-data-source>jdbc/Events</jta-data-source>
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
+			<property name="javax.persistence.jdbc.user" value="postgres" />
+			<property name="javax.persistence.jdbc.password" value="lama1203" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/Events" />
+			
+			<!-- EclipseLink should create the database schema automatically -->
+  			<property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+  			<property name="eclipselink.weaving" value="false"/>
+     		<property name="eclipselink.logging.level" value="FINEST"/>
+		</properties>
+	</persistence-unit>
+</persistence>
