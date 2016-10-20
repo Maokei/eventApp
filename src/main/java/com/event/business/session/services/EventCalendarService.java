@@ -1,4 +1,4 @@
-package com.event.business.calendar;
+package com.event.business.session.services;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.Singleton;
 import javax.inject.Inject;
 
 import com.event.business.AppConstants;
@@ -21,16 +23,18 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
 
-public class EventCalendar {
+@Singleton
+public class EventCalendarService {
 	
 	@Inject
 	AppLogger logger;
 	
-	private final Calendar service;
-	private final NetHttpTransport httpTransport;
-	private final JacksonFactory jsonFactory;
+	private Calendar service;
+	private NetHttpTransport httpTransport;
+	private JacksonFactory jsonFactory;
 	
-	public EventCalendar() {
+	@PostConstruct
+	public void setupService() {
 		httpTransport = new NetHttpTransport();
 		jsonFactory = new JacksonFactory();
 		service = initCalendarService();
@@ -61,9 +65,6 @@ public class EventCalendar {
 	
 	public void createEvent(com.event.domain.entities.Event event, List<String> organizers) {
 		try {
-			com.google.api.services.calendar.model.Calendar calendar = 
-					service.calendars().get("primary").execute();
-			
 			List<EventAttendee> attendees = getAttendees(event, organizers);
 			Event calendarEvent = setupCalendarEvent(event, attendees);
 			service.events().insert("primary", calendarEvent).execute();
