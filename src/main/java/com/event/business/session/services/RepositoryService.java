@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import com.event.business.logging.AppLogger;
 import com.event.business.session.providers.EventProvider;
 import com.event.business.session.providers.UserProvider;
 import com.event.business.util.CommentInfo;
@@ -36,6 +38,9 @@ public class RepositoryService {
 	
 	@Inject
 	EventCalendarService eventCalendarService;
+	
+	@Inject
+	AppLogger logger;
 
 	public void persistEventsFromFile(EventParser parser, String contextPath) {
 		Set<String> usernames = parser.getUsers().keySet();
@@ -51,7 +56,7 @@ public class RepositoryService {
 			users.add(user);
 		}
 
-		final ArrayList<Event> events = new ArrayList<>();
+		Set<Event> events = new HashSet<>();
 		for (EventInfo info : parser.getEvents()) {
 			Event event = new Event();
 			event.setTitle(info.getTitle());
@@ -123,7 +128,8 @@ public class RepositoryService {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void createNewEvent(Event event) {
 		eventProvider.create(event);
-		eventCalendarService.createEvent(event);
+		logger.log(event.toString());
+		// eventCalendarService.createEvent(event);
 	}
 	
 	public User findUserByName(String firstName, String lastName) {
