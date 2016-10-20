@@ -22,6 +22,8 @@ public class NewEventController implements Serializable {
 	@Inject
 	RepositoryService repositoryService;
 	
+	
+	
 	private String title;
 	private String city;
 	private String organizer;
@@ -100,14 +102,10 @@ public class NewEventController implements Serializable {
 		String[] firstAndLastName = organizer.split(" ");
 		String firstName = firstAndLastName[0];
 		String lastName = firstAndLastName[1];
+		
 		User user = repositoryService.findUserByName(firstName, lastName);
-		if(user != null) {
-			System.out.println("Calling updateUserWithNewEvent");
-			repositoryService.updateUserWithNewEvent(user, event);
-			System.out.println("User NOT NULL !!!!");
-		} else {
-			System.out.println("User IS NULL !!!!");
-		}
+		repositoryService.updateUserWithNewEvent(user, event);
+			
 		return "completed";
 	}
 
