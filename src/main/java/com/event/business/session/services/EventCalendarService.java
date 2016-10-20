@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 
@@ -34,11 +35,22 @@ public class EventCalendarService {
 	private JacksonFactory jsonFactory;
 	
 	@PostConstruct
-	public void setupService() {
+	public void setupPrimaryCalendarService() {
 		httpTransport = new NetHttpTransport();
 		jsonFactory = new JacksonFactory();
 		service = initCalendarService();
 		initPrimary();
+	}
+	
+	@PreDestroy
+	public void teardownOfCalendars() {
+		try {
+			logger.log("Clearing all events in primary calendar");
+			service.calendars().clear("primary").execute();
+		} catch (IOException e) {
+			logger.log("Exception while clearing Calendar events");
+			e.printStackTrace();
+		}
 	}
 	
 	private void initPrimary() {
@@ -80,7 +92,7 @@ public class EventCalendarService {
 		for(User user : event.getUsers()) {
 			EventAttendee attendee = new EventAttendee();
 			attendee.setDisplayName(user.getFirstName() + " " + user.getLastName());
-			attendee.setEmail(user.getEmail());
+			// attendee.setEmail(user.getEmail());
 			Set<Comment> comments = event.getComments();
 			for(Comment comment : comments) {
 				if(comment.getUser().equals(user)) {
