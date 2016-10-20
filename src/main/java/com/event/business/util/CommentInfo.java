@@ -1,4 +1,4 @@
-package com.event.business.events;
+package com.event.business.util;
 
 import java.util.StringTokenizer;
 import java.util.Vector;

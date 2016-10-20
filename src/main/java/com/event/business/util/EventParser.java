@@ -1,4 +1,4 @@
-package com.event.business.events;
+package com.event.business.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -13,11 +13,11 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import com.event.business.events.CommentInfo;
-import com.event.business.events.EventInfo;
-import com.event.business.events.EventParser;
 import com.event.business.session.providers.EventProvider;
 import com.event.business.session.providers.UserProvider;
+import com.event.business.util.CommentInfo;
+import com.event.business.util.EventInfo;
+import com.event.business.util.EventParser;
 import com.event.domain.entities.Comment;
 import com.event.domain.entities.Event;
 import com.event.domain.entities.User;

@@ -10,8 +10,8 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
-import com.event.business.events.EventParser;
 import com.event.business.resourcehandlers.FileHandler;
+import com.event.business.util.EventParser;
 import com.event.domain.entities.HitCounter;
 import com.event.presentation.counters.AtomicCounter;
 
