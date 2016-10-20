@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
@@ -25,7 +26,7 @@ public class ApplicationTest {
 	private final String refreshToken;
 
 	private final NetHttpTransport httpTransport;
-	private final com.google.api.client.json.jackson2.JacksonFactory jsonFactory;
+	private final JacksonFactory jsonFactory;
 
 	private final Calendar serviceTest;
 
@@ -36,7 +37,7 @@ public class ApplicationTest {
 		this.refreshToken = refreshToken;
 
 		httpTransport = new NetHttpTransport();
-		jsonFactory = new com.google.api.client.json.jackson2.JacksonFactory();
+		jsonFactory = new JacksonFactory();
 
 		serviceTest = initServiceTest();
 	}
