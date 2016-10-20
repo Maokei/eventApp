@@ -5,14 +5,32 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
-	<h:head>
-		<title>Events</title>
-	</h:head>
+	<h:head><title>Events</title></h:head>
 	<h:body>
 		<ui:composition template="/template/common/composite_layout.xhtml">
 			<ui:define name="content">
-				<h2>A list of all events</h2>
-			</ui:define>
-		</ui:composition>
-	</h:body>
+				<p:dataTable var="event" value="#{eventController.events}">
+					<p:column headerText="Title">
+						<h:outputText value="#{event.title}" />
+					</p:column>
+
+					<p:column headerText="Location">
+						<h:outputText value="#{event.city}" />
+					</p:column>
+					
+					<p:column headerText="Content">
+						<h:outputText value="#{event.content}" />
+					</p:column>
+
+					<p:column headerText="Starting at">
+						<h:outputText value="#{event.start}" />
+					</p:column>
+
+					<p:column headerText="Ending at">
+						<h:outputText value="#{event.end}" />
+					</p:column>
+				</p:dataTable>
+		</ui:define>
+	</ui:composition>
+</h:body>
 </html>
