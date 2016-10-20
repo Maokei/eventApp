@@ -1,9 +1,7 @@
 package com.event.business.session.services;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -65,9 +63,9 @@ public class EventCalendarService {
 				.build();
 	}
 	
-	public void createEvent(com.event.domain.entities.Event event, List<String> organizers) {
+	public void createEvent(com.event.domain.entities.Event event) {
 		try {
-			List<EventAttendee> attendees = getAttendees(event, organizers);
+			List<EventAttendee> attendees = getAttendees(event);
 			Event calendarEvent = setupCalendarEvent(event, attendees);
 			service.events().insert("primary", calendarEvent).execute();
 		} catch (IOException e) {
@@ -76,19 +74,13 @@ public class EventCalendarService {
 		}
 	}
 	
-	private List<EventAttendee> getAttendees(com.event.domain.entities.Event event, List<String> organizers) {
+	private List<EventAttendee> getAttendees(com.event.domain.entities.Event event) {
 		List<EventAttendee> attendees = new ArrayList<>();
 		
 		for(User user : event.getUsers()) {
 			EventAttendee attendee = new EventAttendee();
 			attendee.setDisplayName(user.getFirstName() + " " + user.getLastName());
 			attendee.setEmail(user.getEmail());
-			String fullname = user.getFirstName() + " " + user.getLastName();
-			for(String organizer : organizers) {
-				if(fullname.equalsIgnoreCase(organizer)) {
-					attendee.setOrganizer(true);
-				}
-			}
 			Set<Comment> comments = event.getComments();
 			for(Comment comment : comments) {
 				if(comment.getUser().equals(user)) {
@@ -97,6 +89,7 @@ public class EventCalendarService {
 			}
 			attendees.add(attendee);
 		}
+		attendees.get(0).setOrganizer(true);
 		return attendees;
 	}
 	
