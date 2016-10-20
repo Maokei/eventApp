@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
+import com.event.business.AppConstants;
 import com.event.business.resourcehandlers.FileHandler;
 import com.event.business.util.EventParser;
 import com.event.domain.entities.HitCounter;
@@ -23,11 +24,9 @@ public class FileService {
 	@Inject
 	RepositoryService repository;
 	
-	private final static String path = "https://dl.dropboxusercontent.com/u/35363454/javaee/lo1/material/events.txt";
-	
 	public void createModelObjectsFromFile(final ServletContextEvent e) {
 		final FileHandler file = new FileHandler();
-		final ArrayList<String> lines = file.getListOfLinesFromURL(path);
+		final ArrayList<String> lines = file.getListOfLinesFromURL(AppConstants.events_path);
 		final EventParser parser = new EventParser(lines);
 		storeEventsInDatabase(parser, e);
 	}
