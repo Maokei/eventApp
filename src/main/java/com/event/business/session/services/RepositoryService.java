@@ -11,6 +11,8 @@ import java.util.Set;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import com.event.business.session.providers.EventProvider;
@@ -35,32 +37,32 @@ public class RepositoryService {
 	@Inject
 	EventCalendarService eventCalendarService;
 
-	public void persistEventsFromFile(final EventParser parser, final String contextPath) {
-		final Set<String> usernames = parser.getUsers().keySet();
-		final ArrayList<User> users = new ArrayList<>();
-		for (final String userName : usernames) {
-			final String[] fullname = userName.split(" ");
-			final User user = new User();
+	public void persistEventsFromFile(EventParser parser, String contextPath) {
+		Set<String> usernames = parser.getUsers().keySet();
+		ArrayList<User> users = new ArrayList<>();
+		for (String userName : usernames) {
+			String[] fullname = userName.split(" ");
+			User user = new User();
 			user.setFirstName(fullname[0]);
 			user.setLastName(fullname[1]);
 			user.setEmail(parser.getUsers().get(userName));
-			final String pictureURL = fullname[0].toLowerCase() + "." + fullname[1].toLowerCase() + ".png";
+			String pictureURL = fullname[0].toLowerCase() + "." + fullname[1].toLowerCase() + ".png";
 			user.setPictureURL(pictureURL);
 			users.add(user);
 		}
 
 		final ArrayList<Event> events = new ArrayList<>();
-		for (final EventInfo info : parser.getEvents()) {
-			final Event event = new Event();
+		for (EventInfo info : parser.getEvents()) {
+			Event event = new Event();
 			event.setTitle(info.getTitle());
 			event.setCity(info.getCity());
 			event.setStart(info.getStartTime());
 			event.setEnd(info.getEndTime());
 			event.setContent(info.getContent());
 
-			for (final String organizer : info.getOrganizers()) {
-				final String[] userName = parser.getUserNameByEmail(organizer).split(" ");
-				for (final User user : users) {
+			for (String organizer : info.getOrganizers()) {
+				String[] userName = parser.getUserNameByEmail(organizer).split(" ");
+				for (User user : users) {
 					if (user.getFirstName().equals(userName[0]) && user.getLastName().equals(userName[1])) {
 						user.setEvent(event);
 						event.addUser(user);
@@ -70,19 +72,19 @@ public class RepositoryService {
 			}
 		}
 
-		for (final EventInfo info : parser.getEvents()) {
-			for (final CommentInfo commentInfo : info.getComments()) {
-				final Comment comment = new Comment();
+		for (EventInfo info : parser.getEvents()) {
+			for (CommentInfo commentInfo : info.getComments()) {
+				Comment comment = new Comment();
 				comment.setComment(commentInfo.getComment());
 				comment.setTime(commentInfo.getDate() + " " + commentInfo.getTime());
-				final String[] userName = parser.getUserNameByEmail(commentInfo.getMail()).split(" ");
-				for (final User user : users) {
+				String[] userName = parser.getUserNameByEmail(commentInfo.getMail()).split(" ");
+				for (User user : users) {
 					if (user.getFirstName().equals(userName[0]) && user.getLastName().equals(userName[1])) {
 						user.setComment(comment);
 						comment.setUser(user);
 					}
 				}
-				for (final Event event : events) {
+				for (Event event : events) {
 					if (event.getCity().equals(info.getCity()) && event.getTitle().equals(info.getTitle())) {
 						comment.setEvent(event);
 						event.setComment(comment);
@@ -91,9 +93,10 @@ public class RepositoryService {
 			}
 		}
 
-		for (final Event event : events) {
-			eventProvider.create(event);
-			for (final User user : users) {
+		for (Event event : events) {
+			createNewEvent(event);
+			
+			for (User user : users) {
 				if (user.getEvents().isEmpty()) {
 					userProvider.create(user);
 				}
@@ -117,8 +120,10 @@ public class RepositoryService {
 		return eventProvider.findFutureEventsIn(location, current_date);
 	}
 	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void createNewEvent(Event event) {
 		eventProvider.create(event);
+		eventCalendarService.createEvent(event);
 	}
 	
 	public User findUserByName(String firstName, String lastName) {
@@ -126,14 +131,9 @@ public class RepositoryService {
 	}
 	
 	public void updateUserWithNewEvent(User user, Event event) {
-		// TODO make transactional all or nothing
-		
 		User merged = userProvider.update(user);
 		merged.setEvent(event);
-		eventProvider.create(event);
-		List<String> organizers = new ArrayList<>();
-		organizers.add(new String(user.getFirstName() + " " + user.getLastName()));
-		eventCalendarService.createEvent(event, organizers);
+		createNewEvent(event);
 	}
 	
 	public List<Event> findOverlappingEvents() {
