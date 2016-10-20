@@ -16,6 +16,7 @@
 		<javaee-version>7.0</javaee-version>
 		<junit-version>4.12</junit-version>
 		<primefaces-version>6.0</primefaces-version>
+		<google-api-version>v3-rev217-1.22.0</google-api-version>
 	</properties>
 
 	<prerequisites>
@@ -39,10 +40,15 @@
 			<version>${junit-version}</version>
 		</dependency>
 		<dependency>
-    		<groupId>org.primefaces</groupId>
-    		<artifactId>primefaces</artifactId>
-    		<version>${primefaces-version}</version>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>${primefaces-version}</version>
 		</dependency>
-	</dependencies>
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-calendar</artifactId>
+			<version>v3-rev218-1.22.0</version>
+		</dependency>
+</dependencies>
 
 </project>
