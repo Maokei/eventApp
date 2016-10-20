@@ -31,6 +31,9 @@ public class RepositoryService {
 
 	@Inject
 	UserProvider userProvider;
+	
+	@Inject
+	EventCalendarService eventCalendarService;
 
 	public void persistEventsFromFile(final EventParser parser, final String contextPath) {
 		final Set<String> usernames = parser.getUsers().keySet();
@@ -123,9 +126,14 @@ public class RepositoryService {
 	}
 	
 	public void updateUserWithNewEvent(User user, Event event) {
+		// TODO make transactional all or nothing
+		
 		User merged = userProvider.update(user);
 		merged.setEvent(event);
 		eventProvider.create(event);
+		List<String> organizers = new ArrayList<>();
+		organizers.add(new String(user.getFirstName() + " " + user.getLastName()));
+		eventCalendarService.createEvent(event, organizers);
 	}
 	
 	public List<Event> findOverlappingEvents() {
