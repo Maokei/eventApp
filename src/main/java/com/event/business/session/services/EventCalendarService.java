@@ -2,6 +2,8 @@ package com.event.business.session.services;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -99,7 +101,7 @@ public class EventCalendarService {
 	}
 	
 	private Event setupCalendarEvent(com.event.domain.entities.Event event, List<EventAttendee> attendees) {
-		String created = LocalDate.now().toString();
+		String created = LocalDateTime.now().toString();
 		DateTime start = new DateTime(event.getStart().toString());
 		DateTime end =  new DateTime(event.getEnd().toString());
 		
