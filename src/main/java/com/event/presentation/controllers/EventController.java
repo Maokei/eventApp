@@ -1,6 +1,8 @@
 package com.event.presentation.controllers;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.enterprise.context.ConversationScoped;
@@ -14,27 +16,38 @@ import com.event.domain.entities.Event;
 @ConversationScoped
 public class EventController implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Inject
 	RepositoryService repositoryService;
 	
-	private Event selected;
+	private String query;
 	private List<Event> events;
-	
-	public Event getSelected() {
-		return selected;
+	private List<String> cities = 
+			Arrays.asList(new String[] { "Moskva", "Östersund", "Hamburg" });
+
+	public List<String> completeText(String entry) {
+		List<String> results = new ArrayList<String>();
+		for (String city : cities) {
+			if (city.toLowerCase().startsWith(entry.toLowerCase())) {
+				results.add(city);
+			}
+		}
+		return results;
 	}
-	public void setSelected(Event selected) {
-		this.selected = selected;
-	}
-	
+
 	public List<Event> getEvents() {
-		if(events == null || events.isEmpty()) {
-			events = repositoryService.getEvents();
-		}
-		if(events == null || events.isEmpty()) {
-			System.out.println("***** events is null or empty ******");
-		}
+		events = ((query == null) || query.isEmpty()) ? 
+				repositoryService.getEvents() :
+			repositoryService.getEventsByLocation(query);
 		return events;
 	}
+
+	public String getQuery() {
+		return query;
+	}
+
+	public void setQuery(String query) {
+		this.query = query;
+	}
+	
 }
