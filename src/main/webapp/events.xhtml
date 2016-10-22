@@ -5,11 +5,24 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
-	<h:head><title>Events</title></h:head>
-	<h:body>
-		<ui:composition template="/template/common/composite_layout.xhtml">
-			<ui:define name="content">
-				<p:dataTable var="event" value="#{eventController.events}">
+<h:head>
+	<title>Events</title>
+</h:head>
+<h:body>
+	<ui:composition template="/template/common/composite_layout.xhtml">
+		<ui:define name="content">
+			<h:form id="eventform">
+				<h:panelGrid columns="3" cellpadding="5">
+					<p:outputLabel value="By City:" for="citySearch" />
+					<p:autoComplete id="citySearch" value="#{eventController.query}"
+						completeMethod="#{eventController.completeText}" />
+					<p:commandButton value="Search" id="searchButton" update="eventlist"
+						actionListener="#{eventController.filterByCity}"
+						styleClass="ui-priority-primary" />
+				</h:panelGrid>
+				<br />
+				
+				<p:dataTable id="eventlist" var="event" value="#{eventController.events}">
 					<p:column headerText="Title">
 						<h:outputText value="#{event.title}" />
 					</p:column>
@@ -17,7 +30,7 @@
 					<p:column headerText="Location">
 						<h:outputText value="#{event.city}" />
 					</p:column>
-					
+
 					<p:column headerText="Content">
 						<h:outputText value="#{event.content}" />
 					</p:column>
@@ -30,6 +43,7 @@
 						<h:outputText value="#{event.end}" />
 					</p:column>
 				</p:dataTable>
+			</h:form>
 		</ui:define>
 	</ui:composition>
 </h:body>
