@@ -153,4 +153,8 @@ public class RepositoryService {
 		LocalDate current_date = LocalDate.parse(dateStr, formatter);
 		return userProvider.getUsersHostingFutureEvents(current_date);
 	}
+
+	public List<Event> getEventsByLocation(String city) {
+		return eventProvider.findEventByLocation(city);
+	}
 }
