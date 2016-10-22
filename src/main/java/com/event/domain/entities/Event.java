@@ -40,6 +40,8 @@ import com.event.domain.converters.LocalDateTimeConverter;
 	      query="SELECT e FROM Event e WHERE e.id = :id"),
 	  @NamedQuery(name="Event.findByTitle",
 		  query="SELECT e FROM Event e WHERE LOWER(e.title) = :title"),
+	  @NamedQuery(name="Event.findByLocation",
+	  query="SELECT e FROM Event e WHERE LOWER(e.city) = :city"),
 	  @NamedQuery(name="Event.findPastEventsInHamburg",
 	      query="SELECT e FROM Event e WHERE LOWER(e.city) = :city"
 	      		+ " AND e.end < :end_date"),
