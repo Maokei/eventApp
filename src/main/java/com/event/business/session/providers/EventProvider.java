@@ -111,6 +111,19 @@ public class EventProvider extends EntityFacade<Event> {
 		return null;
 	}
 	
+	public List<Event> findEventByLocation(String city) {
+		try {
+			return em.createNamedQuery("Event.findByLocation", Event.class)
+					.setParameter("city", city.toLowerCase())
+					.getResultList();
+		} catch (NoResultException e) {
+			System.err.println("No Entry found for " + city);
+		} catch (PersistenceException e) {
+			System.err.println("PersistenceException: " + e.getMessage());
+		}
+		return null;
+	}
+	
 	public List<Event> findOverlappingEvents() {
 		try {
 			return em.createNamedQuery("Event.findOverlappingEvents", Event.class)
