@@ -12,6 +12,24 @@
 		<ui:composition template="/template/common/composite_layout.xhtml">
 			<ui:define name="content">
 				<h2>Organizer profiles</h2>
+				<h:form>
+					<p:repeat value="#{profileController.users}" var="user">
+        				<h:panelGrid columns="2" cellpadding="5">
+            				<h:graphicImage name ="images/#{user.pictureURL}"/>
+ 
+            				<p:outputPanel>
+                				<h:panelGrid columns="2" cellpadding="5">
+                    				<h:outputText value="Name:" />
+                    				<h:outputText value="#{user.firstName} #{user.lastName}" style="font-weight: bold"/>
+ 
+                    				<h:outputText value="Email:" />
+                    				<h:outputText value="#{user.email}" style="font-weight: bold"/>
+                				</h:panelGrid>
+            				</p:outputPanel>
+        				</h:panelGrid>
+        				<hr />
+    				</p:repeat>
+				</h:form>
 			</ui:define>
 		</ui:composition>
 	</h:body>
