@@ -160,6 +160,9 @@ public class RepositoryService {
 
 	public Event findEventById(Integer id) {
 		return eventProvider.findEventById(id);
-		
+	}
+
+	public List<User> getUsers() {
+		return userProvider.findAll();
 	}
 }

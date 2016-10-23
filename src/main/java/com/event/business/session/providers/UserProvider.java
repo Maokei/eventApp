@@ -120,4 +120,16 @@ public class UserProvider extends EntityFacade<User>{
 		return null;
 	}
 
+	public List<User> findAll() {
+		try {
+			return em.createNamedQuery("User.findAll", User.class)
+					.getResultList();
+		} catch (NoResultException e) {
+			System.err.println("No Users found");
+		} catch (PersistenceException e) {
+			System.err.println("PersistenceException: " + e.getMessage());
+		}
+		return null;
+	}
+
 }
