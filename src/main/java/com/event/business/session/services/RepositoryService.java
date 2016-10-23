@@ -157,4 +157,9 @@ public class RepositoryService {
 	public List<Event> getEventsByLocation(String city) {
 		return eventProvider.findEventByLocation(city);
 	}
+
+	public Event findEventById(Integer id) {
+		return eventProvider.findEventById(id);
+		
+	}
 }

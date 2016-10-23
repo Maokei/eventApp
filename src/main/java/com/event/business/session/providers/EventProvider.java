@@ -136,4 +136,17 @@ public class EventProvider extends EntityFacade<Event> {
 		return null;
 	}
 
+	public Event findEventById(Integer id) {
+		try {
+			return em.createNamedQuery("Event.findByPrimaryKey", Event.class)
+					.setParameter("id", id)
+					.getSingleResult();
+		} catch (NoResultException e) {
+			System.err.println("No Event with id" + id);
+		} catch (PersistenceException e) {
+			System.err.println("PersistenceException: " + e.getMessage());
+		}
+		return null;
+	}
+
 }
