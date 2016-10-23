@@ -9,6 +9,9 @@ import javax.enterprise.context.ConversationScoped;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import com.event.business.session.services.RepositoryService;
 import com.event.domain.entities.Event;
@@ -22,14 +25,21 @@ public class NewEventController implements Serializable {
 	@Inject
 	RepositoryService repositoryService;
 	
-	
-	
+	@NotNull @Size(min = 1, message = "Please enter a title")
 	private String title;
+	@NotNull @Size(min = 1, message = "Please enter a city")
 	private String city;
+	@NotNull @Size(min = 1, message = "Please enter an organizer")
 	private String organizer;
+	@NotNull @Size(min = 1, message = "Please enter start date")
+	@Pattern(regexp = "\\d{2}/\\d{2}/\\d{2}\\s+\\d{2}:\\d{2}",  message ="Enter date on format yy/MM/dd HH:mm")
 	private String startDate;
+	@NotNull @Size(min = 1, message = "Please enter end date")
+	@Pattern(regexp = "\\d{2}/\\d{2}/\\d{2}\\s+\\d{2}:\\d{2}", message ="Enter date on format yy/MM/dd HH:mm")
 	private String endDate;
+	@NotNull @Size(min = 1, message = "Enter content")
 	private String content;
+	
 	private List<SelectItem> organizers = Arrays.asList(new SelectItem[] {
 			new SelectItem("Per Ekeroot", "Per Ekeroot"),
 			new SelectItem("Börje Hansson", "Börje Hansson"),
