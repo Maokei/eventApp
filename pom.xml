@@ -16,7 +16,7 @@
 		<javaee-version>7.0</javaee-version>
 		<junit-version>4.12</junit-version>
 		<primefaces-version>6.0</primefaces-version>
-		<google-api-version>v3-rev217-1.22.0</google-api-version>
+		<google-api-version>v3-rev218-1.22.0</google-api-version>
 	</properties>
 
 	<prerequisites>
@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>com.google.apis</groupId>
 			<artifactId>google-api-services-calendar</artifactId>
-			<version>v3-rev218-1.22.0</version>
+			<version>${google-api-version}</version>
 		</dependency>
 </dependencies>
 
