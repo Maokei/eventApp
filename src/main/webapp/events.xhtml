@@ -23,7 +23,9 @@
 				
 				<p:dataTable id="eventlist" var="event" value="#{eventController.events}">
 					<p:column headerText="Title">
-						<h:outputText value="#{event.title}" />
+						<p:link outcome="viewEvent" value="#{event.title}" includeViewParams="true">
+							<f:param name="eventId" value="#{event.id}" />
+						</p:link>
 					</p:column>
 
 					<p:column headerText="Location">

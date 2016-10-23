@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>View Event</title>
+</h:head>
+<h:body>
+
+	<f:metadata>
+		<f:viewParam name="eventId" value="#{viewEventController.id}"></f:viewParam>
+	</f:metadata>
+	<ui:composition template="/template/common/composite_layout.xhtml">
+		<ui:define name="content">
+			<h2>View Event</h2>
+			<h:form>
+				<p:tabView>
+					<p:tab title="Event Info">
+						<p:panelGrid columns="2" cellpadding="10">
+							<h:outputText value="Title: " />
+							<h:outputText value="#{viewEventController.event.title}" />
+
+							<h:outputText value="City: " />
+							<h:outputText value="#{viewEventController.event.city}" />
+
+							<h:outputText value="Content: " />
+							<h:outputText value="#{viewEventController.event.content}" />
+
+							<h:outputText value="Between: " />
+							<h:outputText
+								value="#{viewEventController.event.start} and #{viewEventController.event.end}" />
+
+							<h:outputText value="Organizers: " />
+							<p:dataList value="#{viewEventController.event.users}" var="organizer">
+       						 	#{organizer.firstName}, #{organizer.lastName}
+    						</p:dataList>
+						</p:panelGrid>
+					</p:tab>
+				
+					<p:tab title="Comments">
+						<p:dataTable id="comments" var="comment" value="#{viewEventController.event.comments}">
+							<p:column headerText="By">
+								<h:outputText value="#{comment.user.firstName} #{comment.user.lastName}" />
+							</p:column>
+
+							<p:column headerText="Comment">
+								<h:outputText value="#{comment.comment}" />
+							</p:column>
+
+							<p:column headerText="At">
+								<h:outputText value="#{comment.time}" />
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+				</p:tabView>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>
