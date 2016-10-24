@@ -16,6 +16,7 @@
 	<ui:composition template="/template/common/composite_layout.xhtml">
 		<ui:define name="content">
 			<h2>View Event</h2>
+			<h:outputText value="Page count: #{viewEventController.count}" />
 			<h:form>
 				<p:tabView>
 					<p:tab title="Event Info">
