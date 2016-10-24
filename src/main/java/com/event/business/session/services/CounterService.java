@@ -25,12 +25,11 @@ public class CounterService {
     }
     
     @Lock(LockType.WRITE)
-    public void incrementCounterOnPage(String page) {
+    public int incrementCounterOnPage(String page) {
     	if(!counters.containsKey(page)) {
-    		counters.put(page, new AtomicInteger(1));
-    	} else {
-    		counters.get(page).incrementAndGet();
+    		counters.put(page, new AtomicInteger(0));
     	}
+    	return counters.get(page).incrementAndGet();
     }
     
     @Lock(LockType.READ)
