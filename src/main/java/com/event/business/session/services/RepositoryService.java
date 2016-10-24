@@ -28,6 +28,7 @@ import com.event.domain.entities.User;
 
 @Stateless
 @LocalBean
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class RepositoryService {
 
 	@Inject
@@ -114,7 +115,7 @@ public class RepositoryService {
 	}
 	
 	public List<Event> getEvents() {
-		return eventProvider.findAll();
+		return sortByDate(eventProvider.findAll());
 	}
 	
 	public List<Event> getEventsByLocationAndDate(String location) {
@@ -136,10 +137,13 @@ public class RepositoryService {
 		return userProvider.findByName(firstName, lastName);
 	}
 	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void updateUserWithNewEvent(User user, Event event) {
 		User merged = userProvider.update(user);
 		merged.setEvent(event);
-		createNewEvent(event);
+		event.addUser(merged);
+		eventProvider.create(event);
+		// eventCalendarService.createEvent(event);
 	}
 	
 	public List<Event> findOverlappingEvents() {
@@ -155,7 +159,8 @@ public class RepositoryService {
 	}
 
 	public List<Event> getEventsByLocation(String city) {
-		return eventProvider.findEventByLocation(city);
+		return sortByDate(eventProvider.findEventByLocation(city));
+		
 	}
 
 	public Event findEventById(Integer id) {
@@ -165,4 +170,14 @@ public class RepositoryService {
 	public List<User> getUsers() {
 		return userProvider.findAll();
 	}
+	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public List<Event> sortByDate(List<Event> unsorted) {
+		List<Event> sorted = new ArrayList<>();
+		unsorted.stream().sorted(
+				(e1, e2) -> e1.getStartDate().compareTo(e2.getStartDate()))
+				.forEach(sorted::add);
+		return sorted;
+	}
+	
 }
