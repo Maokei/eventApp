@@ -8,6 +8,7 @@ import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.event.business.session.services.CounterService;
 import com.event.business.session.services.RepositoryService;
 import com.event.domain.entities.Comment;
 import com.event.domain.entities.Event;
@@ -20,6 +21,10 @@ public class ViewEventController implements Serializable {
 	@Inject
 	RepositoryService repositoryService;
 	
+	@Inject
+	CounterService counterService;
+	
+	private int count;
 	private Integer id;
 	private Event event;
 	private List<Comment> comments;
@@ -53,6 +58,15 @@ public class ViewEventController implements Serializable {
 
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
+	}
+
+	public int getCount() {
+		count = counterService.incrementCounterOnPage("viewEvent" + id);
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 
 }
