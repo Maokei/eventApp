@@ -92,7 +92,7 @@ public class EventCalendarService {
 		for(User user : event.getUsers()) {
 			EventAttendee attendee = new EventAttendee();
 			attendee.setDisplayName(user.getFirstName() + " " + user.getLastName());
-			// attendee.setEmail(user.getEmail());
+			attendee.setEmail(user.getEmail());
 			Set<Comment> comments = event.getComments();
 			for(Comment comment : comments) {
 				if(comment.getUser().equals(user)) {
