@@ -1,53 +1,47 @@
 package com.event.business.session.services;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.ejb.ConcurrencyManagement;
-import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.LocalBean;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
-@Singleton(name="PageCounter")
+@Singleton
 @Startup
-@ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
 @LocalBean
-public class PageCounter {
+public class CounterService {
 	
-	private Map<String, Integer> counters;
+	private Map<String, AtomicInteger> counters;
 	
-    public PageCounter() {
-    	counters = new HashMap<>();
+	@PostConstruct
+    public void initCounterService() {
+    	counters = new ConcurrentHashMap<>();
     }
     
     @Lock(LockType.WRITE)
     public void incrementCounterOnPage(String page) {
     	if(!counters.containsKey(page)) {
-    		counters.put(page, new Integer(1));
+    		counters.put(page, new AtomicInteger(1));
     	} else {
-    		counters.put(page, counters.get(page) + 1);
+    		counters.get(page).incrementAndGet();
     	}
     }
     
     @Lock(LockType.READ)
     public int getPageCountFor(String page) {
-    	return counters.get(page);
+    	return counters.get(page).get();
     }
     
-    private void reset() {
+    public void reset() {
     	for(String page : counters.keySet()) {
-    		counters.put(page, 0);
+    		counters.put(page, new AtomicInteger(0));
     	}
-    }
-    
-    @PostConstruct
-    public void startup() {
-    	reset();
     }
     
     @PreDestroy
