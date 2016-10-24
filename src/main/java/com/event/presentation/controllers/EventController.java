@@ -57,8 +57,7 @@ public class EventController implements Serializable {
 	}
 
 	public int getCount() {
-		counterService.incrementCounterOnPage("event");
-		count = counterService.getPageCountFor("event");
+		count = counterService.incrementCounterOnPage("event");
 		return count;
 	}
 

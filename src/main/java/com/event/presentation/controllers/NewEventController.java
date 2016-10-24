@@ -125,8 +125,7 @@ public class NewEventController implements Serializable {
 		return "completed";
 	}
 	public int getCount() {
-		counterService.incrementCounterOnPage("newEvent");
-		count = counterService.getPageCountFor("newEvent");
+		count = counterService.incrementCounterOnPage("newEvent");
 		return count;
 	}
 	public void setCount(int count) {

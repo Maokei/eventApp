@@ -1,7 +1,6 @@
 package com.event.presentation.controllers;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.ConversationScoped;
@@ -38,8 +37,7 @@ public class ProfileController implements Serializable  {
 	}
 
 	public int getCount() {
-		counterService.incrementCounterOnPage("profile");
-		count = counterService.getPageCountFor("profile");
+		count = counterService.incrementCounterOnPage("profile");
 		return count;
 	}
 

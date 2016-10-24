@@ -19,8 +19,7 @@ public class IndexController implements Serializable {
 	private int count;
 
 	public int getCount() {
-		counterService.incrementCounterOnPage("index");
-		count = counterService.getPageCountFor("index");
+		count = counterService.incrementCounterOnPage("index");
 		return count;
 	}
 
