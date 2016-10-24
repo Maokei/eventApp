@@ -92,6 +92,10 @@ public class Comment implements Serializable {
 		return time.toString()
 				.replace('T', ' ');
 	}
+	
+	public LocalDateTime getDateTime() {
+		return time;
+	}
 
 	public void setTime(String timeStr) {
 		formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm");
