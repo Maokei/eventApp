@@ -3,7 +3,6 @@ package com.event.domain.entities;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -29,7 +28,6 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.event.domain.converters.LocalDateConverter;
 import com.event.domain.converters.LocalDateTimeConverter;
 
 
@@ -73,13 +71,13 @@ public class Event implements Serializable {
 	@Column(name = "city")
 	private String city;
 	
-	@Convert(converter=LocalDateConverter.class)
+	@Convert(converter=LocalDateTimeConverter.class)
 	@Column(name = "start_date")
-	private LocalDate start;
+	private LocalDateTime start;
 	
-	@Convert(converter=LocalDateConverter.class)
+	@Convert(converter=LocalDateTimeConverter.class)
 	@Column(name = "end_date")
-	private LocalDate end;
+	private LocalDateTime end;
 	
 	@Convert(converter=LocalDateTimeConverter.class)
 	@Column(name = "lastupdate")
@@ -107,8 +105,8 @@ public class Event implements Serializable {
 		this.content = content;
 		
 		formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm");
-		this.start = LocalDate.parse(start, formatter);
-		this.end = LocalDate.parse(end, formatter);
+		this.start = LocalDateTime.parse(start, formatter);
+		this.end = LocalDateTime.parse(end, formatter);
 		formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm:ss");
 		this.lastUpdate = LocalDateTime.parse(new Date().toString(), formatter);
 	}
@@ -117,8 +115,8 @@ public class Event implements Serializable {
 		this.title = title;
 		this.city = city;
 		formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm");
-		this.start = LocalDate.parse(start, formatter);
-		this.end = LocalDate.parse(end, formatter);
+		this.start = LocalDateTime.parse(start, formatter);
+		this.end = LocalDateTime.parse(end, formatter);
 		formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm:ss");
 		this.lastUpdate = LocalDateTime.parse(new Date().toString(), formatter);
 	}
@@ -147,22 +145,32 @@ public class Event implements Serializable {
 		this.city = city;
 	}
 
-	public LocalDate getStart() {
+	public LocalDateTime getStartDate() {
 		return start;
+	}
+	
+	public String getStart() {
+		formatter = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm");
+		return start.format(formatter).replace("T", " ");
 	}
 
 	public void setStart(String startStr) {
 		formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm");
-		start = LocalDate.parse(startStr, formatter);
+		start = LocalDateTime.parse(startStr, formatter);
 	}
 
-	public LocalDate getEnd() {
+	public LocalDateTime getEndDate() {
 		return end;
 	}
 
 	public void setEnd(String endStr) {
 		formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm");
-		end = LocalDate.parse(endStr, formatter);
+		end = LocalDateTime.parse(endStr, formatter);
+	}
+	
+	public String getEnd() {
+		formatter = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm");
+		return end.format(formatter).replace("T", " ");
 	}
 
 	public String getLastUpdate() {
