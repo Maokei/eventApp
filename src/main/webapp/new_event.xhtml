@@ -12,6 +12,7 @@
 		<ui:composition template="/template/common/composite_layout.xhtml">
 			<ui:define name="content">
 				<h2>Add new Event</h2>
+				<h:outputText value="Page count: #{newEventController.count}" />
 				
 				<h:form>
 					<h:panelGrid columns="3">

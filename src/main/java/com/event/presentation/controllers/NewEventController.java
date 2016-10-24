@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.event.business.session.services.CounterService;
 import com.event.business.session.services.RepositoryService;
 import com.event.domain.entities.Event;
 import com.event.domain.entities.User;
@@ -24,6 +25,11 @@ public class NewEventController implements Serializable {
 	
 	@Inject
 	RepositoryService repositoryService;
+	
+	@Inject
+	CounterService counterService;
+	
+	private int count;
 	
 	@NotNull @Size(min = 1, message = "Please enter a title")
 	private String title;
@@ -42,9 +48,9 @@ public class NewEventController implements Serializable {
 	
 	private List<SelectItem> organizers = Arrays.asList(new SelectItem[] {
 			new SelectItem("Per Ekeroot", "Per Ekeroot"),
-			new SelectItem("Börje Hansson", "Börje Hansson"),
+			new SelectItem("BÃ¶rje Hansson", "BÃ¶rje Hansson"),
 			new SelectItem("Felix Dobslaw", "Felix Dobslaw"),
-			new SelectItem("Örjan Sterner", "Örjan Sterner"),
+			new SelectItem("Ã–rjan Sterner", "Ã–rjan Sterner"),
 			new SelectItem("Fredrik Aletind", "Fredrik Aletind"),
 	});
 	
@@ -117,6 +123,14 @@ public class NewEventController implements Serializable {
 		repositoryService.updateUserWithNewEvent(user, event);
 			
 		return "completed";
+	}
+	public int getCount() {
+		counterService.incrementCounterOnPage("newEvent");
+		count = counterService.getPageCountFor("newEvent");
+		return count;
+	}
+	public void setCount(int count) {
+		this.count = count;
 	}
 
 }

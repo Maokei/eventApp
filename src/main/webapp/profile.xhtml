@@ -12,6 +12,7 @@
 		<ui:composition template="/template/common/composite_layout.xhtml">
 			<ui:define name="content">
 				<h2>Organizer profiles</h2>
+				<h:outputText value="Page count: #{profileController.count}" />
 				<h:form>
 					<p:repeat value="#{profileController.users}" var="user">
         				<h:panelGrid columns="2" cellpadding="5">

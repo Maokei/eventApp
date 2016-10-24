@@ -11,6 +11,7 @@
 <h:body>
 	<ui:composition template="/template/common/composite_layout.xhtml">
 		<ui:define name="content">
+		<h:outputText value="Page count: #{eventController.count}" />
 			<h:form id="eventform">
 				<h:panelGrid columns="3" cellpadding="5">
 					<p:outputLabel value="By City:" for="citySearch" />

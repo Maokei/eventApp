@@ -9,6 +9,7 @@ import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.event.business.session.services.CounterService;
 import com.event.business.session.services.RepositoryService;
 import com.event.domain.entities.Event;
 
@@ -20,10 +21,15 @@ public class EventController implements Serializable {
 	@Inject
 	RepositoryService repositoryService;
 	
+	@Inject
+	CounterService counterService;
+	
+	private int count;
 	private String query;
 	private List<Event> events;
 	private List<String> cities = 
-			Arrays.asList(new String[] { "Moskva", "Östersund", "Hamburg" });
+			Arrays.asList(new String[] { "Moskva", "Ã–stersund", "Hamburg" });
+	
 
 	public List<String> completeText(String entry) {
 		List<String> results = new ArrayList<String>();
@@ -48,6 +54,16 @@ public class EventController implements Serializable {
 
 	public void setQuery(String query) {
 		this.query = query;
+	}
+
+	public int getCount() {
+		counterService.incrementCounterOnPage("event");
+		count = counterService.getPageCountFor("event");
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 	
 }

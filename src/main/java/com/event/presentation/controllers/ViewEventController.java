@@ -36,7 +36,6 @@ public class ViewEventController implements Serializable {
 		if(event == null) {
 			event = repositoryService.findEventById(id);
 		}
-		
 		return event;
 	}
 
@@ -45,7 +44,8 @@ public class ViewEventController implements Serializable {
 	}
 
 	public List<Comment> getComments() {
-		event.getComments().stream().sorted(
+		comments = new ArrayList<>();
+		getEvent().getComments().stream().sorted(
 				(e1, e2) -> e1.getDateTime().compareTo(e2.getDateTime()))
 				.forEach(comments::add);
 		return comments;
@@ -54,6 +54,5 @@ public class ViewEventController implements Serializable {
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
 	}
-	
 
 }
