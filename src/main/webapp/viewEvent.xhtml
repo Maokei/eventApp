@@ -41,7 +41,7 @@
 					</p:tab>
 				
 					<p:tab title="Comments">
-						<p:dataTable id="comments" var="comment" value="#{viewEventController.event.comments}">
+						<p:dataTable id="comments" var="comment" value="#{viewEventController.comments}">
 							<p:column headerText="By">
 								<h:outputText value="#{comment.user.firstName} #{comment.user.lastName}" />
 							</p:column>
