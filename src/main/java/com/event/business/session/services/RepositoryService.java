@@ -24,7 +24,6 @@ import com.event.business.util.EventInfo;
 import com.event.business.util.EventParser;
 import com.event.domain.entities.Comment;
 import com.event.domain.entities.Event;
-import com.event.domain.entities.HitCounter;
 import com.event.domain.entities.User;
 
 @Stateless
@@ -179,11 +178,6 @@ public class RepositoryService {
 				(e1, e2) -> e1.getStartDate().compareTo(e2.getStartDate()))
 				.forEach(sorted::add);
 		return sorted;
-	}
-
-	public void persistHitCounter(HitCounter counter) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }
