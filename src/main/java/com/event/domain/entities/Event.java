@@ -149,7 +149,7 @@ public class Event implements Serializable {
 		return start;
 	}
 	
-	public String getStartSimple() {
+	public String getStart() {
 		formatter = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm");
 		return start.format(formatter).replace("T", " ");
 	}
@@ -172,7 +172,7 @@ public class Event implements Serializable {
 		end = LocalDateTime.parse(endStr+":00", formatter);
 	}
 	
-	public String getEndSimple() {
+	public String getEnd() {
 		formatter = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm");
 		return end.format(formatter).replace("T", " ");
 	}
