@@ -130,7 +130,7 @@ public class RepositoryService {
 	public void createNewEvent(Event event) {
 		eventProvider.create(event);
 		logger.log(event.toString());
-		// eventCalendarService.createEvent(event);
+		eventCalendarService.createEvent(event);
 	}
 	
 	public User findUserByName(String firstName, String lastName) {
@@ -143,7 +143,7 @@ public class RepositoryService {
 		merged.setEvent(event);
 		event.addUser(merged);
 		eventProvider.create(event);
-		// eventCalendarService.createEvent(event);
+		eventCalendarService.createEvent(event);
 	}
 	
 	public List<Event> findOverlappingEvents() {
