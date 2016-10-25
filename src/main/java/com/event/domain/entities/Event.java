@@ -104,7 +104,7 @@ public class Event implements Serializable {
 		this.city = city;
 		this.content = content;
 		
-		formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm");
+		formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm:ss");
 		this.start = LocalDateTime.parse(start, formatter);
 		this.end = LocalDateTime.parse(end, formatter);
 		formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm:ss");
@@ -114,7 +114,7 @@ public class Event implements Serializable {
 	public Event(String title, String city, String start, String end, String content) {
 		this.title = title;
 		this.city = city;
-		formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm");
+		formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm:ss");
 		this.start = LocalDateTime.parse(start, formatter);
 		this.end = LocalDateTime.parse(end, formatter);
 		formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm:ss");
@@ -149,14 +149,18 @@ public class Event implements Serializable {
 		return start;
 	}
 	
-	public String getStart() {
+	public String getStartSimple() {
 		formatter = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm");
 		return start.format(formatter).replace("T", " ");
 	}
+	
+	public String getStartFull() {
+		return start.toString();
+	}
 
 	public void setStart(String startStr) {
-		formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm");
-		start = LocalDateTime.parse(startStr, formatter);
+		formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm:ss");
+		start = LocalDateTime.parse(startStr+":00", formatter);
 	}
 
 	public LocalDateTime getEndDate() {
@@ -164,13 +168,17 @@ public class Event implements Serializable {
 	}
 
 	public void setEnd(String endStr) {
-		formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm");
-		end = LocalDateTime.parse(endStr, formatter);
+		formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm:ss");
+		end = LocalDateTime.parse(endStr+":00", formatter);
 	}
 	
-	public String getEnd() {
+	public String getEndSimple() {
 		formatter = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm");
 		return end.format(formatter).replace("T", " ");
+	}
+	
+	public String getEndFull() {
+		return end.toString();
 	}
 
 	public String getLastUpdate() {
