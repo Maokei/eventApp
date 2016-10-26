@@ -2,8 +2,9 @@ package com.event.presentation.controllers;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
@@ -27,13 +28,10 @@ public class EventController implements Serializable {
 	private int count;
 	private String query;
 	private List<Event> events;
-	private List<String> cities = 
-			Arrays.asList(new String[] { "Moskva", "Östersund", "Hamburg" });
-	
 
 	public List<String> completeText(String entry) {
 		List<String> results = new ArrayList<String>();
-		for (String city : cities) {
+		for (String city : getCityNames()) {
 			if (city.toLowerCase().startsWith(entry.toLowerCase())) {
 				results.add(city);
 			}
@@ -46,6 +44,16 @@ public class EventController implements Serializable {
 				repositoryService.getEvents() :
 			repositoryService.getEventsByLocation(query);
 		return events;
+	}
+	
+	private Set<String> getCityNames() {
+		List<Event> events = repositoryService.getEvents();
+		Set<String> cities = new HashSet<>();
+		for(Event event : events) {
+			if(!cities.contains(event.getCity()))
+				cities.add(event.getCity());
+		}
+		return cities;
 	}
 
 	public String getQuery() {
