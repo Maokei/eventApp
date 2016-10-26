@@ -113,9 +113,9 @@ public class NewEventController implements Serializable {
 		
 		User user = repositoryService.findUserByName(firstName, lastName);
 		repositoryService.updateUserWithNewEvent(user, event);
-			
 		return "completed";
 	}
+	
 	public int getCount() {
 		count = counterService.incrementCounterOnPage("newEvent");
 		return count;
