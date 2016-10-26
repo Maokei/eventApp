@@ -1,6 +1,7 @@
 package com.event.business.session.providers;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -94,9 +95,9 @@ public class UserProvider extends EntityFacade<User>{
 		return null;
 	}
 	
-	public List<User> getUsersHostingFutureEvents(LocalDate current_date) {
+	public List<String> getUsersHostingFutureEvents(LocalDateTime current_date) {
 		try {
-			return em.createNamedQuery("User.NamesOfUsersHostingFutureEvents", User.class)
+			return em.createNamedQuery("User.NamesOfUsersHostingFutureEvents", String.class)
 					.setParameter("curr_date", current_date)
 					.getResultList();
 		} catch (NoResultException e) {
@@ -123,6 +124,18 @@ public class UserProvider extends EntityFacade<User>{
 	public List<User> findAll() {
 		try {
 			return em.createNamedQuery("User.findAll", User.class)
+					.getResultList();
+		} catch (NoResultException e) {
+			System.err.println("No Users found");
+		} catch (PersistenceException e) {
+			System.err.println("PersistenceException: " + e.getMessage());
+		}
+		return null;
+	}
+
+	public List<User> getOrganizers() {
+		try {
+			return em.createNamedQuery("User.GetOrganizers", User.class)
 					.getResultList();
 		} catch (NoResultException e) {
 			System.err.println("No Users found");
