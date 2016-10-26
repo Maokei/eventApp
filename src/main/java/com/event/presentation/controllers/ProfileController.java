@@ -3,7 +3,7 @@ package com.event.presentation.controllers;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -12,7 +12,7 @@ import com.event.business.session.services.RepositoryService;
 import com.event.domain.entities.User;
 
 @Named
-@ConversationScoped
+@RequestScoped
 public class ProfileController implements Serializable  {
 	private static final long serialVersionUID = 1L;
 	

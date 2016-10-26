@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -15,7 +15,7 @@ import com.event.business.session.services.RepositoryService;
 import com.event.domain.entities.Event;
 
 @Named
-@ConversationScoped
+@RequestScoped
 public class EventController implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -27,6 +27,7 @@ public class EventController implements Serializable {
 	
 	private int count;
 	private String query;
+	
 	private List<Event> events;
 
 	public List<String> completeText(String entry) {
@@ -34,15 +35,16 @@ public class EventController implements Serializable {
 		for (String city : getCityNames()) {
 			if (city.toLowerCase().startsWith(entry.toLowerCase())) {
 				results.add(city);
-			}
+			} 
 		}
+		
 		return results;
 	}
 
 	public List<Event> getEvents() {
 		events = ((query == null) || query.isEmpty()) ? 
 				repositoryService.getEvents() :
-			repositoryService.getEventsByLocation(query);
+			repositoryService.getEventsByLocation(query);		
 		return events;
 	}
 	

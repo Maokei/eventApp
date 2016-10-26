@@ -2,14 +2,14 @@ package com.event.presentation.controllers;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.event.business.session.services.CounterService;
 
 @Named
-@ConversationScoped
+@RequestScoped
 public class IndexController implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
