@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.inject.Inject;
 
 import com.event.business.AppConstants;
@@ -30,6 +31,7 @@ import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
 
 @Singleton
+@Startup
 public class EventCalendarService {
 
 	@Inject
@@ -42,30 +44,22 @@ public class EventCalendarService {
 
 	@PostConstruct
 	public void setupPrimaryCalendarService() {
+		
 		httpTransport = new NetHttpTransport();
 		jsonFactory = new JacksonFactory();
 		calendarIds = new ConcurrentHashMap<>();
 		service = initCalendarService();
-		initPrimary();
 	}
 
 	@PreDestroy
 	public void teardownOfCalendars() {
+		
 		try {
 			removeAllCalendars();
 			logger.log("Clearing all events in primary calendar");
 			service.calendars().clear("primary").execute();
 		} catch (IOException e) {
 			logger.log("Exception while clearing Calendar events");
-			e.printStackTrace();
-		}
-	}
-
-	private void initPrimary() {
-		try {
-			service.calendars().get("primary").execute().setSummary("Event Organizer").setTimeZone("Europe/Stockholm");
-		} catch (IOException e) {
-			logger.log("Exception while setting summary and timezone");
 			e.printStackTrace();
 		}
 	}
@@ -78,64 +72,85 @@ public class EventCalendarService {
 		return new Calendar.Builder(httpTransport, jsonFactory, credential).build();
 	}
 
-	public void createEvent(com.event.domain.entities.Event event) {
+	public boolean createEvent(com.event.domain.entities.Event event) {
+		boolean success = true;
 		try {
-			createCalendarForLocation(event.getCity());
+			if(!createCalendarForLocation(event.getCity())) {
+				removeCalendarAtLocation(event.getCity());
+				return false;
+			}
 			List<EventAttendee> attendees = getAttendees(event);
 			Event calendarEvent = setupCalendarEvent(event, attendees);
 			service.events().insert(getIdForLocation(event.getCity()), calendarEvent).execute();
 		} catch (IOException e) {
 			logger.log("Exception while creating an CalendarEvent");
 			e.printStackTrace();
+			success = false;
+			removeCalendarAtLocation(event.getCity());
+		} catch (Exception e) {
+			e.printStackTrace();
+			success = false;
+			removeCalendarAtLocation(event.getCity());
 		}
+		return success;
 	}
 
-	public void createCalendarForLocation(String location) {
+	public boolean createCalendarForLocation(String location) {
 		CalendarList calendarList = null;
 		try {
 			calendarList = service.calendarList().list().execute();
 			for (CalendarListEntry calendarListEntry : calendarList.getItems()) {
 				if (calendarListEntry.getSummary().equalsIgnoreCase(location)) {
-					return;
+					calendarIds.put(location, calendarListEntry.getId());
+					return true;
 				}
 			}
 			com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services.calendar.model.Calendar();
 			calendar.setSummary(location);
 			calendar.setTimeZone("Europe/Stockholm");
 
-			com.google.api.services.calendar.model.Calendar createdCalendar = 
-					service.calendars().insert(calendar).execute();
+			com.google.api.services.calendar.model.Calendar createdCalendar = service.calendars().insert(calendar)
+					.execute();
 
 			String id = createdCalendar.getId();
 			calendarIds.put(location, id);
 		} catch (IOException e) {
-			System.out.println();
+			logger.log("Exception in creating Calendar for " + location);
+			removeCalendarAtLocation(location);
 			e.printStackTrace();
+			return false;
+		} catch(Exception e) {
+			removeCalendarAtLocation(location);
+			e.printStackTrace();
+			return false;
 		}
+		return true;
 	}
-	
+
 	public void removeCalendarAtLocation(String location) {
 		try {
-			service.calendars().delete(calendarIds.get(location)).execute();
+			if(getIdForLocation(location) != null) {
+				service.calendars().delete(calendarIds.get(location)).execute();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public String getIdForLocation(String location) {
 		return calendarIds.get(location);
 	}
-	
+
 	public void removeAllCalendars() {
-		for(String key : calendarIds.keySet()) {
+		for (String key : calendarIds.keySet()) {
 			try {
-				service.calendars().clear(key).execute();
+				service.calendars().clear(getIdForLocation(key)).execute();
 				removeCalendarAtLocation(key);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 
 	private List<EventAttendee> getAttendees(com.event.domain.entities.Event event) {
