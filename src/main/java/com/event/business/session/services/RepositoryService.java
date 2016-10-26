@@ -149,9 +149,11 @@ public class RepositoryService {
 		} catch (EJBException e) {
 			logger.log("Caught EJBException in createNewEvent, Rolling back");
 			context.setRollbackOnly();
+			e.printStackTrace();
 		} catch (Exception e) {
 			logger.log("Caught Exception in createNewEvent, Rolling back");
 			context.setRollbackOnly();
+			e.printStackTrace();
 		}
 	}
 
@@ -171,10 +173,13 @@ public class RepositoryService {
 				context.setRollbackOnly();
 			}
 		} catch (EJBException e) {
-			System.out.println();
+			logger.log("Caught EJBException in updateUserWithNewEvent, Rolling back");
 			context.setRollbackOnly();
+			e.printStackTrace();
 		} catch (Exception e) {
 			context.setRollbackOnly();
+			logger.log("Caught Exception in updateUserWithNewEvent, Rolling back");
+			e.printStackTrace();
 		}
 	}
 
