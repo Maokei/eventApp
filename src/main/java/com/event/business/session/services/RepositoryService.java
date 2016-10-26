@@ -107,17 +107,13 @@ public class RepositoryService {
 		}
 
 		for (Event event : events) {
-			if(event.getCity().equalsIgnoreCase("Moskva")) {
-				createNewEvent(event);
-			} else {
-				eventProvider.create(event);
-			}
-			
+			createNewEvent(event);
 
-			for (User user : users) {
-				if (user.getEvents().isEmpty()) {
-					userProvider.create(user);
-				}
+		}
+		
+		for (User user : users) {
+			if (user.getEvents().isEmpty()) {
+				userProvider.create(user);
 			}
 		}
 	}
