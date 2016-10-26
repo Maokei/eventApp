@@ -2,7 +2,6 @@ package com.event.presentation.controllers;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.enterprise.context.ConversationScoped;
@@ -46,13 +45,7 @@ public class NewEventController implements Serializable {
 	@NotNull @Size(min = 1, message = "Enter content")
 	private String content;
 	
-	private List<SelectItem> organizers = Arrays.asList(new SelectItem[] {
-			new SelectItem("Per Ekeroot", "Per Ekeroot"),
-			new SelectItem("Börje Hansson", "Börje Hansson"),
-			new SelectItem("Felix Dobslaw", "Felix Dobslaw"),
-			new SelectItem("Örjan Sterner", "Örjan Sterner"),
-			new SelectItem("Fredrik Aletind", "Fredrik Aletind"),
-	});
+	private List<SelectItem> organizers;
 	
 	public String getTitle() {
 		return title;
@@ -99,10 +92,9 @@ public class NewEventController implements Serializable {
 	}
 	
 	public void initOrganizers() {
-		List<User> futureHosts = repositoryService.findUsersHostingFutureEvents();
+		List<String> namesOfFutureHosts = repositoryService.findUsersHostingFutureEvents();
 		organizers = new ArrayList<>();
-		for(User user : futureHosts) {
-			String name = user.getFirstName() + " " + user.getLastName();
+		for(String name : namesOfFutureHosts) {
 			organizers.add(new SelectItem(name, name));
 		}
 	}
