@@ -170,7 +170,7 @@ public class EventCalendarService {
 	private Event setupCalendarEvent(com.event.domain.entities.Event event, List<EventAttendee> attendees) {
 
 		Event calendarEvent = new Event();
-		// calendarEvent.setAttendees(attendees);
+		calendarEvent.setAttendees(attendees);
 		calendarEvent.setSummary(event.getTitle());
 		calendarEvent.setDescription(event.getContent());
 
