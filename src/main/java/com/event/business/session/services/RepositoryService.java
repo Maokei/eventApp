@@ -3,6 +3,7 @@ package com.event.business.session.services;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -150,11 +151,11 @@ public class RepositoryService {
 		return eventProvider.findOverlappingEvents();
 	}
 	
-	public List<User> findUsersHostingFutureEvents() {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy/MM/dd");
-		DateFormat df = new SimpleDateFormat("yy/MM/dd");
+	public List<String> findUsersHostingFutureEvents() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm");
+		DateFormat df = new SimpleDateFormat("yy/MM/dd HH:mm");
 		String dateStr = df.format(new Date());
-		LocalDate current_date = LocalDate.parse(dateStr, formatter);
+		LocalDateTime current_date = LocalDateTime.parse(dateStr, formatter);
 		return userProvider.getUsersHostingFutureEvents(current_date);
 	}
 
@@ -178,6 +179,10 @@ public class RepositoryService {
 				(e1, e2) -> e1.getStartDate().compareTo(e2.getStartDate()))
 				.forEach(sorted::add);
 		return sorted;
+	}
+
+	public List<User> getOrganizers() {
+		return userProvider.getOrganizers();
 	}
 	
 }
