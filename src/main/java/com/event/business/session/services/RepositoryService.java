@@ -11,6 +11,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Resource;
+import javax.ejb.EJBContext;
+import javax.ejb.EJBException;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -37,10 +40,13 @@ public class RepositoryService {
 
 	@Inject
 	UserProvider userProvider;
-	
+
 	@Inject
 	EventCalendarService eventCalendarService;
-	
+
+	@Resource
+	EJBContext context;
+
 	@Inject
 	AppLogger logger;
 
@@ -102,7 +108,7 @@ public class RepositoryService {
 
 		for (Event event : events) {
 			createNewEvent(event);
-			
+
 			for (User user : users) {
 				if (user.getEvents().isEmpty()) {
 					userProvider.create(user);
@@ -110,15 +116,15 @@ public class RepositoryService {
 			}
 		}
 	}
-	
+
 	public List<User> findUsersWithMoreThanOneComments() {
 		return userProvider.MoreThanOneComment();
 	}
-	
+
 	public List<Event> getEvents() {
 		return sortByDate(eventProvider.findAll());
 	}
-	
+
 	public List<Event> getEventsByLocationAndDate(String location) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy/MM/dd");
 		DateFormat df = new SimpleDateFormat("yy/MM/dd");
@@ -126,31 +132,51 @@ public class RepositoryService {
 		LocalDate current_date = LocalDate.parse(dateStr, formatter);
 		return eventProvider.findFutureEventsIn(location, current_date);
 	}
-	
+
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void createNewEvent(Event event) {
-		eventProvider.create(event);
-		logger.log(event.toString());
-		//eventCalendarService.createEvent(event);
+		try {
+			eventProvider.create(event);
+			if (!eventCalendarService.createEvent(event)) {
+				logger.log("Rolling back createNewEvent for " + event);
+				context.setRollbackOnly();
+			}
+		} catch (EJBException e) {
+			logger.log("Caught EJBException in createNewEvent, Rolling back");
+			context.setRollbackOnly();
+		} catch (Exception e) {
+			logger.log("Caught Exception in createNewEvent, Rolling back");
+			context.setRollbackOnly();
+		}
 	}
-	
+
 	public User findUserByName(String firstName, String lastName) {
 		return userProvider.findByName(firstName, lastName);
 	}
-	
+
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void updateUserWithNewEvent(User user, Event event) {
-		User merged = userProvider.update(user);
-		merged.setEvent(event);
-		event.addUser(merged);
-		eventProvider.create(event);
-		//eventCalendarService.createEvent(event);
+		try {
+			User merged = userProvider.update(user);
+			merged.setEvent(event);
+			event.addUser(merged);
+			eventProvider.create(event);
+			if (!eventCalendarService.createEvent(event)) {
+				logger.log("Rolling back updateUserWithNewEvent for " + event + " for user + " + user);
+				context.setRollbackOnly();
+			}
+		} catch (EJBException e) {
+			System.out.println();
+			context.setRollbackOnly();
+		} catch (Exception e) {
+			context.setRollbackOnly();
+		}
 	}
-	
+
 	public List<Event> findOverlappingEvents() {
 		return eventProvider.findOverlappingEvents();
 	}
-	
+
 	public List<String> findUsersHostingFutureEvents() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy/MM/dd HH:mm");
 		DateFormat df = new SimpleDateFormat("yy/MM/dd HH:mm");
@@ -161,7 +187,7 @@ public class RepositoryService {
 
 	public List<Event> getEventsByLocation(String city) {
 		return sortByDate(eventProvider.findEventByLocation(city));
-		
+
 	}
 
 	public Event findEventById(Integer id) {
@@ -171,18 +197,16 @@ public class RepositoryService {
 	public List<User> getUsers() {
 		return userProvider.findAll();
 	}
-	
+
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<Event> sortByDate(List<Event> unsorted) {
 		List<Event> sorted = new ArrayList<>();
-		unsorted.stream().sorted(
-				(e1, e2) -> e1.getStartDate().compareTo(e2.getStartDate()))
-				.forEach(sorted::add);
+		unsorted.stream().sorted((e1, e2) -> e1.getStartDate().compareTo(e2.getStartDate())).forEach(sorted::add);
 		return sorted;
 	}
 
 	public List<User> getOrganizers() {
 		return userProvider.getOrganizers();
 	}
-	
+
 }
