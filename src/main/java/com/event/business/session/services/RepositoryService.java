@@ -108,7 +108,6 @@ public class RepositoryService {
 
 		for (Event event : events) {
 			createNewEvent(event);
-
 		}
 		
 		for (User user : users) {
@@ -138,10 +137,7 @@ public class RepositoryService {
 	public void createNewEvent(Event event) {
 		try {
 			eventProvider.create(event);
-			if (!eventCalendarService.createEvent(event)) {
-				logger.log("Rolling back createNewEvent for " + event);
-				context.setRollbackOnly();
-			}
+			eventCalendarService.createEvent(event);
 		} catch (EJBException e) {
 			logger.log("Caught EJBException in createNewEvent, Rolling back");
 			context.setRollbackOnly();
