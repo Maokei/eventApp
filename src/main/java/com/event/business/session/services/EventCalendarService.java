@@ -29,6 +29,7 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Event.Organizer;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
+import com.google.api.services.calendar.model.Events;
 
 @Singleton
 @Startup
@@ -45,7 +46,7 @@ public class EventCalendarService {
 
 	@PostConstruct
 	public void setupPrimaryCalendarService() {
-		
+
 		httpTransport = new NetHttpTransport();
 		jsonFactory = new JacksonFactory();
 		calendarIds = new ConcurrentHashMap<>();
@@ -69,7 +70,7 @@ public class EventCalendarService {
 	public boolean createEvent(com.event.domain.entities.Event event) {
 		boolean success = true;
 		try {
-			if(!createCalendarForLocation(event.getCity())) {
+			if (isDuplicateEvent(event) || !createCalendarForLocation(event.getCity())) {
 				return false;
 			}
 			List<EventAttendee> attendees = getAttendees(event);
@@ -88,18 +89,41 @@ public class EventCalendarService {
 		}
 		return success;
 	}
-	
+
+	private boolean isDuplicateEvent(com.event.domain.entities.Event event) {
+		try {
+			if ((calendarIds.get(event.getCity())) == null) {
+				return false;
+			}
+			String pageToken = null;
+			do {
+				Events events = service.events().list(calendarIds.get(event.getCity())).setPageToken(pageToken)
+						.execute();
+				List<Event> items = events.getItems();
+				for (Event e : items) {
+					if (event.getTitle().equalsIgnoreCase(e.getSummary())
+							&& event.getContent().equalsIgnoreCase(e.getDescription())) {
+						return true;
+					}
+				}
+				pageToken = events.getNextPageToken();
+			} while (pageToken != null);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	public void removeCalendarEvent(com.event.domain.entities.Event event) {
 		String eventId = event.getCity().toLowerCase() + "_" + event.getTitle().toLowerCase();
 		try {
-			if(!(calendarIds.get(event.getCity()) == null || eventIds.get(eventId) == null)) {
+			if (!(calendarIds.get(event.getCity()) == null || eventIds.get(eventId) == null)) {
 				service.events().delete(calendarIds.get(event.getCity()), eventIds.get(eventId));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
 
 	public boolean createCalendarForLocation(String location) {
 		CalendarList calendarList = null;
@@ -124,7 +148,7 @@ public class EventCalendarService {
 			logger.log("Exception in creating Calendar for " + location);
 			e.printStackTrace();
 			return false;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -133,7 +157,7 @@ public class EventCalendarService {
 
 	public void removeCalendarAtLocation(String location) {
 		try {
-			if(getIdForLocation(location) != null) {
+			if (getIdForLocation(location) != null) {
 				service.calendars().delete(calendarIds.get(location)).execute();
 			}
 		} catch (IOException e) {
